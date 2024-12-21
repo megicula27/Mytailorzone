@@ -10,32 +10,32 @@ import { cn } from "@/lib/utils";
 const products = [
   {
     id: 1,
-    name: "Ceramic Vase Collection",
-    price: 129,
+    name: "Peachy Bloom Cotton Suit Set",
+    price: 1099,
     images: [
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
+      "/product_1_0.webp?height=400&width=400",
+      "/product_1_1.webp?height=400&width=400",
+      "/product_1_2.webp?height=400&width=400",
     ],
   },
   {
     id: 2,
-    name: "Handcrafted Pottery Set",
-    price: 89,
+    name: "Shimmer Orange Sharara Suit Set",
+    price: 899,
     images: [
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
+      "/product_2_0.webp?height=400&width=400",
+      "/product_2_1.webp?height=400&width=400",
+      "/product_2_2.webp?height=400&width=400",
     ],
   },
   {
     id: 3,
-    name: "Artisan Candle Bundle",
-    price: 59,
+    name: "Scarlet Red Ruffle Saree",
+    price: 1299,
     images: [
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
-      "/placeholder.svg?height=400&width=400",
+      "/product_3_0.webp?height=300&width=400",
+      "/product_3_1.webp?height=400&width=400",
+      "/product_3_2.webp?height=400&width=400",
     ],
   },
 ];
@@ -86,11 +86,11 @@ export function FeaturedProducts() {
                     alt={product.name}
                     width={400}
                     height={400}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                    className="object-contain w-auto h-full transition-transform duration-500 group-hover:scale-110 rounded-2xl"
                   />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-xl font-bold mb-4">${product.price}</p>
+                <p className="text-xl font-bold mb-4">₹{product.price}</p>
               </Link>
               <Button className="w-full">Add to Cart</Button>
             </div>

@@ -1,16 +1,13 @@
 import { Navbar } from "@/components/navbar/navbar";
-import { ProductPage } from "@/components/product-page/product-page";
+import { Cart } from "@/components/cart/cart";
 import { Footer } from "@/components/footer/footer";
 
-export default async function Product({ params }) {
-  const { id } = await params;
-  const productId = parseInt(id);
-
+export default function CartPage() {
   return (
     <div className="min-h-screen flex flex-col mt-8">
       <Navbar />
       <main className="flex-grow">
-        <ProductPage productId={productId} />
+        <Cart />
       </main>
       <Footer />
     </div>

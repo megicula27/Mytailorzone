@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 
 export default function ThankYouPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col mt-8">
       <Navbar />
-      <main className="flex-grow flex items-center justify-center bg-gray-50">
+      <main className="flex-grow flex items-center justify-center bg-gray-50 mt-2">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Thank You for Your Order!</h1>
           <p className="text-xl text-gray-600 mb-8">

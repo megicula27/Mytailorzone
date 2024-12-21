@@ -8,18 +8,18 @@ import { cn } from "@/lib/utils";
 
 const categories = [
   {
-    name: "VASES",
-    image: "/placeholder.svg?height=400&width=400",
+    name: "SAREE",
+    image: "/saree.webp?height=400&width=400",
     link: "/category/vases",
   },
   {
-    name: "CANDLES",
-    image: "/placeholder.svg?height=400&width=400",
+    name: "LEHENGA",
+    image: "/lehenga.webp?height=400&width=400",
     link: "/category/candles",
   },
   {
-    name: "CERAMICS",
-    image: "/placeholder.svg?height=400&width=400",
+    name: "SUIT",
+    image: "/suit.webp?height=400&width=400",
     link: "/category/ceramics",
   },
 ];

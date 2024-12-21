@@ -10,17 +10,19 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 // Dummy product data
+
 const products = [
   {
     id: 1,
-    name: "Ceramic Vase Collection",
-    price: 129,
+    name: "Peachy Bloom Cotton Suit Set",
     description:
       "Elevate your home decor with our exquisite Ceramic Vase Collection. Each piece is handcrafted by skilled artisans, featuring unique textures and elegant designs that blend seamlessly with any interior style.",
+
+    price: 1099,
     images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=300&width=300",
-      "/placeholder.svg?height=300&width=300",
+      "/product_1_0.webp?height=400&width=400",
+      "/product_1_1.webp?height=400&width=400",
+      "/product_1_2.webp?height=400&width=400",
     ],
     rating: 4.5,
     reviews: [
@@ -47,28 +49,30 @@ const products = [
   },
   {
     id: 2,
-    name: "Handcrafted Pottery Set",
-    price: 89,
+    name: "Shimmer Orange Sharara Suit Set",
+    price: 899,
     description:
       "Our Handcrafted Pottery Set brings rustic charm to your dining experience. Each piece is uniquely shaped and glazed, creating a one-of-a-kind set that's both functional and decorative.",
+
     images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=300&width=300",
-      "/placeholder.svg?height=300&width=300",
+      "/product_2_0.webp?height=400&width=400",
+      "/product_2_1.webp?height=400&width=400",
+      "/product_2_2.webp?height=400&width=400",
     ],
     rating: 4.2,
     reviews: [],
   },
   {
     id: 3,
-    name: "Artisan Candle Bundle",
-    price: 59,
+    name: "Scarlet Red Ruffle Saree",
+    price: 1299,
     description:
       "Indulge your senses with our Artisan Candle Bundle. Featuring a variety of hand-poured soy candles in exquisite scents, this set creates a warm and inviting atmosphere in any room.",
+
     images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=300&width=300",
-      "/placeholder.svg?height=300&width=300",
+      "/product_3_0.webp?height=300&width=400",
+      "/product_3_1.webp?height=400&width=400",
+      "/product_3_2.webp?height=400&width=400",
     ],
     rating: 4.8,
     reviews: [],
@@ -159,7 +163,7 @@ export function ProductPage({ productId }) {
                 ({product.rating.toFixed(1)})
               </span>
             </div>
-            <p className="text-2xl font-bold">${product.price}</p>
+            <p className="text-2xl font-bold">₹{product.price}</p>
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
@@ -180,7 +184,7 @@ export function ProductPage({ productId }) {
             <div className="flex space-x-4">
               <Button
                 className="flex-1"
-                onClick={() => router.push("/checkout")}
+                onClick={() => router.push("/protected/checkout")}
               >
                 Buy Now
               </Button>
@@ -250,16 +254,16 @@ export function ProductPage({ productId }) {
                 href={`/product/${similarProduct.id}`}
                 className="group"
               >
-                <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
+                <div className="aspect-square relative overflow-hidden mb-4">
                   <Image
                     src={similarProduct.images[0]}
                     alt={similarProduct.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-auto object-contain transition-transform duration-300 group-hover:scale-110 rounded-full"
                   />
                 </div>
                 <h3 className="font-semibold mb-2">{similarProduct.name}</h3>
-                <p className="text-gray-600">${similarProduct.price}</p>
+                <p className="text-gray-600">₹{similarProduct.price}</p>
               </Link>
             ))}
           </div>

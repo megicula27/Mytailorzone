@@ -24,10 +24,11 @@ export function Footer() {
         >
           <div className="absolute inset-0">
             <Image
-              src="/placeholder.svg?height=600&width=1200"
+              src="/footer.jpg?height=600&width=1200"
               alt="Newsletter background"
               fill
               className="object-cover"
+              style={{ objectPosition: "50% 30%" }}
             />
             <div className="absolute inset-0 bg-black/40" />
           </div>
@@ -111,7 +112,7 @@ export function Footer() {
               <option>English</option>
             </select>
             <select className="w-full p-2 border rounded">
-              <option>USD</option>
+              <option>INDIAN RUPEES ₹</option>
             </select>
           </div>
         </div>
@@ -119,7 +120,7 @@ export function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center mt-20 pt-8 border-t">
           <p className="text-sm text-gray-600">
-            © 2024 MY DECOR, Inc. All rights reserved
+            © 2024 ADITYA VIKRAM SINGH, Inc. All rights reserved
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="#" className="text-gray-600 hover:text-gray-900">

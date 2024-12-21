@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -8,18 +8,10 @@ import { Input } from "@/components/ui/input";
 import { useScrollAnimation } from "@/utils/animation";
 import { cn } from "@/lib/utils";
 
-// Dummy product data (you would typically fetch this from an API or state management)
-const product = {
-  id: 1,
-  name: "Ceramic Vase Collection",
-  price: 129,
-  quantity: 1,
-  image: "/placeholder.svg?height=100&width=100",
-};
-
 export function Checkout() {
   const router = useRouter();
   const { elementRef, isVisible } = useScrollAnimation();
+  const [products, setProducts] = useState([]);
   const [address, setAddress] = useState({
     fullName: "",
     streetAddress: "",
@@ -28,7 +20,18 @@ export function Checkout() {
     zipCode: "",
   });
 
-  const subtotal = product.price * product.quantity;
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const itemsParam = searchParams.get("items");
+    if (itemsParam) {
+      setProducts(JSON.parse(itemsParam));
+    }
+  }, []);
+
+  const subtotal = products.reduce(
+    (total, product) => total + product.price * product.quantity,
+    0
+  );
   const deliveryCharge = subtotal < 50 ? 10 : 0;
   const total = subtotal + deliveryCharge;
 
@@ -41,7 +44,7 @@ export function Checkout() {
     e.preventDefault();
     // Here you would typically process the order
     // For now, we'll just redirect to the thank you page
-    router.push("/thank-you");
+    router.push("/protected/thank-you");
   };
 
   return (
@@ -58,20 +61,24 @@ export function Checkout() {
         {/* Order Summary */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-          <div className="flex items-center space-x-4">
-            <Image
-              src={product.image}
-              alt={product.name}
-              width={100}
-              height={100}
-              className="rounded-md"
-            />
-            <div>
-              <h3 className="font-semibold">{product.name}</h3>
-              <p className="text-gray-600">Quantity: {product.quantity}</p>
-              <p className="font-semibold">${product.price.toFixed(2)}</p>
+          {products.map((product) => (
+            <div key={product.id} className="flex items-center space-x-4 mb-4">
+              <Image
+                src={product.image}
+                alt={product.name}
+                width={50}
+                height={50}
+                className="rounded-md"
+              />
+              <div className="flex-grow">
+                <h3 className="font-semibold">{product.name}</h3>
+                <p className="text-gray-600">Quantity: {product.quantity}</p>
+              </div>
+              <p className="font-semibold">
+                ${(product.price * product.quantity).toFixed(2)}
+              </p>
             </div>
-          </div>
+          ))}
           <div className="mt-4 border-t pt-4">
             <div className="flex justify-between">
               <span>Subtotal</span>

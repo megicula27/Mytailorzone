@@ -11,9 +11,9 @@ const products = [
     id: 1,
     name: "Ceramic Vase",
     images: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
+      "/banner.jpg",
+      "/banner1.jpg?height=600&width=600",
+      "/banner2.jpg?height=600&width=600",
     ],
   },
   // Add more products here
@@ -27,7 +27,7 @@ export function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % 3);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
 
@@ -40,13 +40,19 @@ export function Hero() {
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-150"
         )}
       >
-        <Image
-          src={products[currentProduct].images[currentImage]}
-          alt="Hero"
-          fill
-          className="object-cover"
-          priority
-        />
+        {products[currentProduct].images.map((image, index) => (
+          <Image
+            key={index}
+            src={image}
+            alt={`Hero image ${index}`}
+            fill
+            className={cn(
+              "absolute inset-0 object-cover transition-opacity duration-1000",
+              index === currentImage ? "opacity-100" : "opacity-0"
+            )}
+            priority={index === currentImage}
+          />
+        ))}
       </div>
       <div className="absolute inset-0 bg-black/30" />
       <div className="relative h-full flex items-center justify-center text-center text-white">
