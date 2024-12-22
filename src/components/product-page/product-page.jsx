@@ -8,81 +8,20 @@ import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/utils/animation";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { PRODUCTS_ITEMS } from "@/constants/products";
+import { useCart } from "@/context/cart/cartContext";
 // Dummy product data
-
-const products = [
-  {
-    id: 1,
-    name: "Peachy Bloom Cotton Suit Set",
-    description:
-      "Elevate your home decor with our exquisite Ceramic Vase Collection. Each piece is handcrafted by skilled artisans, featuring unique textures and elegant designs that blend seamlessly with any interior style.",
-
-    price: 1099,
-    images: [
-      "/product_1_0.webp?height=400&width=400",
-      "/product_1_1.webp?height=400&width=400",
-      "/product_1_2.webp?height=400&width=400",
-    ],
-    rating: 4.5,
-    reviews: [
-      {
-        id: 1,
-        author: "Jane Doe",
-        rating: 5,
-        comment: "Absolutely beautiful! The craftsmanship is outstanding.",
-      },
-      {
-        id: 2,
-        author: "John Smith",
-        rating: 4,
-        comment: "Great quality, but shipping took longer than expected.",
-      },
-      {
-        id: 3,
-        author: "Emily Brown",
-        rating: 5,
-        comment:
-          "These vases are stunning. They've completely transformed my living room.",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Shimmer Orange Sharara Suit Set",
-    price: 899,
-    description:
-      "Our Handcrafted Pottery Set brings rustic charm to your dining experience. Each piece is uniquely shaped and glazed, creating a one-of-a-kind set that's both functional and decorative.",
-
-    images: [
-      "/product_2_0.webp?height=400&width=400",
-      "/product_2_1.webp?height=400&width=400",
-      "/product_2_2.webp?height=400&width=400",
-    ],
-    rating: 4.2,
-    reviews: [],
-  },
-  {
-    id: 3,
-    name: "Scarlet Red Ruffle Saree",
-    price: 1299,
-    description:
-      "Indulge your senses with our Artisan Candle Bundle. Featuring a variety of hand-poured soy candles in exquisite scents, this set creates a warm and inviting atmosphere in any room.",
-
-    images: [
-      "/product_3_0.webp?height=300&width=400",
-      "/product_3_1.webp?height=400&width=400",
-      "/product_3_2.webp?height=400&width=400",
-    ],
-    rating: 4.8,
-    reviews: [],
-  },
-];
 
 export function ProductPage({ productId }) {
   const router = useRouter();
-  const product = products.find((p) => p.id === productId) || products[0];
+  const product =
+    PRODUCTS_ITEMS.find((p) => p.id == productId) || PRODUCTS_ITEMS[0];
   const [quantity, setQuantity] = useState(1);
+  const { setSelectedProducts } = useCart();
+  const { data: session } = useSession();
   const [mainImage, setMainImage] = useState(product.images[0]);
   const { elementRef: imageRef, isVisible: imageVisible } =
     useScrollAnimation();
@@ -93,7 +32,52 @@ export function ProductPage({ productId }) {
   const { elementRef: similarRef, isVisible: similarVisible } =
     useScrollAnimation();
 
-  const similarProducts = products.filter((p) => p.id !== product.id);
+  const similarProducts = PRODUCTS_ITEMS.filter((p) => p.id !== product.id);
+  const handleAddToCart = async (productId, quantity = 1) => {
+    // Check if the user is logged in
+    if (!session?.user?.id) {
+      toast.error("You need to log in to add items to your cart.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/cart/add", {
+        userId: session.user.id, // Pass user ID in the body
+        productId,
+        quantity,
+      });
+
+      if (response.status === 200) {
+        toast.success("Item added to cart!");
+      } else {
+        toast.error(response.data.error || "Failed to add item to cart.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("An error occurred while adding the item to the cart.");
+    }
+  };
+  const handleBuyNow = () => {
+    if (!session?.user?.id) {
+      toast.error("You need to log in to proceed.");
+
+      return;
+    }
+
+    const newCartItem = {
+      id: product.id, // Use the product UID
+      name: product.name || "Unknown Product",
+      price: product.price || 0,
+      quantity,
+      image: product.images[0] || "", // Use a placeholder if the image is missing
+    };
+
+    // Add the new product to the cart
+    setSelectedProducts((prevProducts) => [...prevProducts, newCartItem]);
+
+    // Redirect to the checkout page
+    router.push("/protected/checkout");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -182,13 +166,15 @@ export function ProductPage({ productId }) {
               </Button>
             </div>
             <div className="flex space-x-4">
-              <Button
-                className="flex-1"
-                onClick={() => router.push("/protected/checkout")}
-              >
+              <Button className="flex-1" onClick={handleBuyNow}>
                 Buy Now
               </Button>
-              <Button variant="outline" className="flex-1">
+
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => handleAddToCart(productId, quantity)}
+              >
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 Add to Cart
               </Button>
@@ -236,7 +222,7 @@ export function ProductPage({ productId }) {
           )}
         </div>
 
-        {/* Similar Products */}
+        {/* Similar PRODUCTS_ITEMS */}
         <div
           ref={similarRef}
           className={cn(

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ThankYouPage() {
   return (
-    <div className="min-h-screen flex flex-col mt-8">
+    <div className="min-h-screen flex flex-col mt-16">
       <Navbar />
       <main className="flex-grow flex items-center justify-center bg-gray-50 mt-2">
         <div className="text-center">

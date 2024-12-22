@@ -1,17 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScrollAnimation } from "@/utils/animation";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/context/cart/cartContext";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 export function Checkout() {
   const router = useRouter();
   const { elementRef, isVisible } = useScrollAnimation();
-  const [products, setProducts] = useState([]);
+  const { selectedProducts } = useCart();
   const [address, setAddress] = useState({
     fullName: "",
     streetAddress: "",
@@ -19,16 +23,9 @@ export function Checkout() {
     state: "",
     zipCode: "",
   });
+  const { data: session } = useSession();
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const itemsParam = searchParams.get("items");
-    if (itemsParam) {
-      setProducts(JSON.parse(itemsParam));
-    }
-  }, []);
-
-  const subtotal = products.reduce(
+  const subtotal = selectedProducts.reduce(
     (total, product) => total + product.price * product.quantity,
     0
   );
@@ -40,11 +37,59 @@ export function Checkout() {
     setAddress((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically process the order
-    // For now, we'll just redirect to the thank you page
-    router.push("/protected/thank-you");
+
+    if (!session?.user) {
+      toast.error("Please log in to proceed with the order.");
+      return;
+    }
+
+    try {
+      // 1. Place the order
+      const orderData = {
+        userId: session.user.id,
+        items: selectedProducts.map((product) => ({
+          product: product.id,
+          quantity: product.quantity,
+          price: product.price,
+        })),
+        totalAmount: total,
+        shippingAddress: address,
+      };
+
+      const orderResponse = await axios.post("/api/orders/create", orderData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (orderResponse.status === 201) {
+        // 2. Remove items from cart one by one, sequentially
+        for (const product of selectedProducts) {
+          await axios.post(
+            `/api/cart/remove`,
+            {
+              itemId: product.id,
+            },
+            {
+              headers: {
+                "user-id": session.user.id,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
+
+        toast.success("Order placed successfully!");
+        router.push("/protected/thank-you");
+      } else {
+        toast.error("Failed to place order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -61,7 +106,7 @@ export function Checkout() {
         {/* Order Summary */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-          {products.map((product) => (
+          {selectedProducts.map((product) => (
             <div key={product.id} className="flex items-center space-x-4 mb-4">
               <Image
                 src={product.image}
@@ -75,22 +120,22 @@ export function Checkout() {
                 <p className="text-gray-600">Quantity: {product.quantity}</p>
               </div>
               <p className="font-semibold">
-                ${(product.price * product.quantity).toFixed(2)}
+                ₹{(product.price * product.quantity).toFixed(2)}
               </p>
             </div>
           ))}
           <div className="mt-4 border-t pt-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Delivery Charge</span>
-              <span>${deliveryCharge.toFixed(2)}</span>
+              <span>₹{deliveryCharge.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-semibold text-lg mt-2">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
           </div>
         </div>

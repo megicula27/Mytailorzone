@@ -1,12 +1,10 @@
 // models/Order.js
 import mongoose from "mongoose";
-import { Product } from "../Product/Product";
 import { User } from "../User/User";
 
 const orderItemSchema = new mongoose.Schema({
   product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
+    type: String,
     required: true,
   },
   quantity: {
@@ -36,7 +34,8 @@ const orderSchema = new mongoose.Schema({
     default: "PENDING",
   },
   shippingAddress: {
-    street: String,
+    fullName: String,
+    streetAddress: String,
     city: String,
     state: String,
     zipCode: String,

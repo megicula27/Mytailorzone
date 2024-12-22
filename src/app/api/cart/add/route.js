@@ -1,17 +1,17 @@
 import dbConnect from "@/database/mongoDb/db";
-import { Cart } from "@/models/Cart/Cart";
-import { Product } from "@/models/Product/Product";
+import Cart from "@/models/Cart/Cart";
+import Product from "@/models/Product/Product";
 import { NextResponse } from "next/server";
-
+import mongoose from "mongoose";
 export async function POST(req) {
   try {
     await dbConnect();
 
     const body = await req.json();
-    const { userId, productUid, quantity } = body;
+    const { userId, productId, quantity = 1 } = body;
 
     // Find the product by uid
-    const product = await Product.findOne({ uid: productUid });
+    const product = await Product.findOne({ uid: productId });
     if (!product) {
       return NextResponse.json(
         { message: "Product not found" },
@@ -31,7 +31,7 @@ export async function POST(req) {
 
     // Check if product already exists in cart
     const existingItemIndex = cart.items.findIndex(
-      (item) => item.product.uid === productUid
+      (item) => item.product.uid == productId
     );
 
     if (existingItemIndex > -1) {

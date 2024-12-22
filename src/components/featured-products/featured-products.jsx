@@ -6,46 +6,43 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/utils/animation";
 import { cn } from "@/lib/utils";
-
-const products = [
-  {
-    id: 1,
-    name: "Peachy Bloom Cotton Suit Set",
-    price: 1099,
-    images: [
-      "/product_1_0.webp?height=400&width=400",
-      "/product_1_1.webp?height=400&width=400",
-      "/product_1_2.webp?height=400&width=400",
-    ],
-  },
-  {
-    id: 2,
-    name: "Shimmer Orange Sharara Suit Set",
-    price: 899,
-    images: [
-      "/product_2_0.webp?height=400&width=400",
-      "/product_2_1.webp?height=400&width=400",
-      "/product_2_2.webp?height=400&width=400",
-    ],
-  },
-  {
-    id: 3,
-    name: "Scarlet Red Ruffle Saree",
-    price: 1299,
-    images: [
-      "/product_3_0.webp?height=300&width=400",
-      "/product_3_1.webp?height=400&width=400",
-      "/product_3_2.webp?height=400&width=400",
-    ],
-  },
-];
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { products } from "@/constants/products";
 
 export function FeaturedProducts() {
   const { elementRef, isVisible } = useScrollAnimation();
   const [activeImage, setActiveImage] = useState({});
+  const { data: session } = useSession();
+
+  const handleAddToCart = async (productId, quantity = 1) => {
+    // Check if the user is logged in
+    if (!session?.user?.id) {
+      toast.error("You need to log in to add items to your cart.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/cart/add", {
+        userId: session.user.id, // Pass user ID in the body
+        productId,
+        quantity,
+      });
+
+      if (response.status === 200) {
+        toast.success("Item added to cart!");
+      } else {
+        toast.error(response.data.error || "Failed to add item to cart.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("An error occurred while adding the item to the cart.");
+    }
+  };
 
   return (
-    <div className="py-20 bg-gray-50">
+    <div id="featured-products" className="py-20 bg-gray-50">
       <div
         ref={elementRef}
         className={cn(
@@ -92,7 +89,12 @@ export function FeaturedProducts() {
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <p className="text-xl font-bold mb-4">₹{product.price}</p>
               </Link>
-              <Button className="w-full">Add to Cart</Button>
+              <Button
+                className="w-full"
+                onClick={() => handleAddToCart(product.id, 1)}
+              >
+                Add to Cart
+              </Button>
             </div>
           ))}
         </div>

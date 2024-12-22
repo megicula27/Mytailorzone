@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Heart } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, Package } from "lucide-react";
 import { useScrollPosition } from "@/utils/animation";
 import { cn } from "@/lib/utils";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -68,6 +68,9 @@ export function Navbar() {
                     <Link href="/protected/cart" className="block py-2">
                       Cart
                     </Link>
+                    <Link href="/protected/orders" className="block py-2">
+                      Orders
+                    </Link>
                   </div>
                 </div>
               )}
@@ -77,19 +80,19 @@ export function Navbar() {
               <div className="flex items-center space-x-8">
                 <Link
                   href="/collection"
-                  className="text-gray-300 hover:text-gray-200"
+                  className="text-gray-300 hover:text-gray-600"
                 >
                   Collection
                 </Link>
                 <Link
                   href="/shop"
-                  className="text-gray-300 hover:text-gray-200"
+                  className="text-gray-300 hover:text-gray-600"
                 >
                   Shop
                 </Link>
                 <Link
                   href="/about"
-                  className="text-gray-300 hover:text-gray-200"
+                  className="text-gray-300 hover:text-gray-600"
                 >
                   About
                 </Link>
@@ -97,30 +100,36 @@ export function Navbar() {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/protected/wishlist"
-                  className="text-gray-300 hover:text-gray-200"
+                  className="text-gray-300 hover:text-gray-600"
                 >
-                  <Heart className="h-6 w-6 text-gray-300" />
+                  <Heart className="h-6 w-6 " />
                 </Link>
                 {session ? (
                   <button
                     onClick={() => signOut()}
-                    className="text-gray-300 hover:text-gray-200"
+                    className="text-gray-300 hover:text-gray-600"
                   >
                     Logout
                   </button>
                 ) : (
                   <button
                     onClick={() => signIn()}
-                    className="text-gray-300 hover:text-gray-200"
+                    className="text-gray-300 hover:text-gray-600"
                   >
                     Login
                   </button>
                 )}
                 <Link
                   href="/protected/cart"
-                  className="text-gray-300 hover:text-gray-200"
+                  className="text-gray-300 hover:text-gray-600"
                 >
-                  <ShoppingBag className="h-6 w-6 text-gray-300" />
+                  <ShoppingBag className="h-6 w-6 " />
+                </Link>
+                <Link
+                  href="/protected/orders"
+                  className="text-gray-300 hover:text-gray-600"
+                >
+                  <Package className="h-6 w-6" />
                 </Link>
               </div>
             </>

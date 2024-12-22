@@ -1,28 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/utils/animation";
 import { cn } from "@/lib/utils";
-
-const products = [
-  {
-    id: 1,
-    name: "Ceramic Vase",
-    images: [
-      "/banner.jpg",
-      "/banner1.jpg?height=600&width=600",
-      "/banner2.jpg?height=600&width=600",
-    ],
-  },
-  // Add more products here
-];
+import { BANNER } from "@/constants/products";
 
 export function Hero() {
   const [currentProduct, setCurrentProduct] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
   const { elementRef, isVisible } = useScrollAnimation();
+
+  const scrollToFeaturedProducts = useCallback(() => {
+    const featuredProducts = document.getElementById("featured-products");
+    if (featuredProducts) {
+      featuredProducts.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -40,7 +35,7 @@ export function Hero() {
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-150"
         )}
       >
-        {products[currentProduct].images.map((image, index) => (
+        {BANNER[currentProduct].images.map((image, index) => (
           <Image
             key={index}
             src={image}
@@ -63,7 +58,11 @@ export function Hero() {
           <p className="text-xl md:text-2xl">
             Breathing new life into cultural craft
           </p>
-          <Button size="lg" className="bg-white text-black hover:bg-white/90">
+          <Button
+            size="lg"
+            className="bg-white text-black hover:bg-white/90"
+            onClick={scrollToFeaturedProducts}
+          >
             Shop now
           </Button>
         </div>
