@@ -48,7 +48,7 @@ export function Order() {
     return <div className="text-center py-8">No orders found</div>;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 mt-16">
       <div
         ref={elementRef}
         className={cn(
