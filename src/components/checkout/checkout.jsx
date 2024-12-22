@@ -24,6 +24,7 @@ export function Checkout() {
     zipCode: "",
   });
   const { data: session } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = selectedProducts.reduce(
     (total, product) => total + product.price * product.quantity,
@@ -44,6 +45,8 @@ export function Checkout() {
       toast.error("Please log in to proceed with the order.");
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       // 1. Place the order
@@ -89,6 +92,8 @@ export function Checkout() {
     } catch (error) {
       console.error("Error placing order:", error);
       toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -185,8 +190,10 @@ export function Checkout() {
               required
             />
           </div>
-          <Button type="submit" className="w-full">
-            Place Order
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting
+              ? "Placing your order, keep it tight..."
+              : "Place Order"}
           </Button>
         </form>
       </div>
