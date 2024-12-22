@@ -49,3 +49,49 @@ To run this project locally, follow these steps:
    git clone https://github.com/your-username/my-tailor-zone.git
    cd my-tailor-zone
    ```
+
+2. **Build and run using Docker:**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+## 🎮 Usage
+
+- **Visit the application:**
+  Open your browser and go to `http://localhost:3000`.
+
+- **Sign in / Sign out:**
+  Register or log in to access your personalized shopping experience.
+
+- **Browse Products:**
+  Explore the product listings and enjoy the interactive hover effects on featured items.
+
+- **Manage Cart:**
+  Add, remove, and adjust product quantities in your cart.
+
+- **Place Orders:**
+  Proceed to checkout and confirm your purchases.
+
+## 🧰 Technologies Used
+
+- **Frontend:** Next.js, React
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Authentication:** NextAuth.js
+- **Containerization:** Docker
+
+## 🤝 Contributing
+
+We welcome contributions to enhance MY TAILOR ZONE. To contribute, please:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature-branch`).
+6. Create a new Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
