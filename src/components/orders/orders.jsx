@@ -41,11 +41,11 @@ export function Order() {
     fetchOrders();
   }, [session]);
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) return <div className="text-center py-8 mt-16">Loading...</div>;
   if (error)
-    return <div className="text-center py-8 text-red-500">{error}</div>;
+    return <div className="text-center py-8 text-red-500 mt-16">{error}</div>;
   if (!orders?.length)
-    return <div className="text-center py-8">No orders found</div>;
+    return <div className="text-center py-8 mt-16">No orders found</div>;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 mt-16">
