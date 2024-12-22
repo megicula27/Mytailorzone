@@ -73,7 +73,7 @@ export function ProductPage({ productId }) {
     };
 
     // Add the new product to the cart
-    setSelectedProducts((prevProducts) => [...prevProducts, newCartItem]);
+    setSelectedProducts([newCartItem]);
 
     // Redirect to the checkout page
     router.push("/protected/checkout");
