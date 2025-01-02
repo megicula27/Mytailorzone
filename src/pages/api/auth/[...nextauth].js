@@ -1,12 +1,16 @@
 import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import User from "@/models/User/User";
 import dbConnect from "@/database/mongoDb/db";
-import CredentialsProvider from "next-auth/providers/credentials";
-import mongoose from "mongoose";
-
 const options = {
   providers: [
+    // Google OAuth Provider
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     // Credentials Provider for email/password
     CredentialsProvider({
       name: "Credentials",
@@ -35,6 +39,7 @@ const options = {
         if (!isValidPassword) {
           throw new Error("Incorrect password");
         }
+        console.log("login process started");
 
         // Return user object if authentication successful
         return {
@@ -47,6 +52,32 @@ const options = {
   ],
 
   callbacks: {
+    async signIn({ user, account }) {
+      await dbConnect();
+      if (account.provider === "google") {
+        // Check if user exists in MongoDB
+        const existingUser = await User.findOne({ email: user.email });
+
+        if (!existingUser) {
+          // Create a new MongoDB user document with default fields
+
+          const newUser = await User.create({
+            email: user.email,
+            username: user.name,
+          });
+
+          // Assign the newly created user's _id to the user object
+          user.id = newUser._id.toString(); // Ensure user.id is a string for consistency
+          user.name = newUser.username;
+        } else {
+          // For existing users, assign their MongoDB _id to the user object
+          user.id = existingUser._id.toString(); // Ensure user.id is a string for consistency
+          user.name = existingUser.username;
+        }
+      }
+      return true;
+    },
+
     async jwt({ token, user }) {
       // Persist additional user information in token
       if (user) {
